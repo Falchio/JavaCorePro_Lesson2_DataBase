@@ -1,9 +1,6 @@
 package server;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class AuthenticationService {
     private static Connection connection;
@@ -19,10 +16,12 @@ public class AuthenticationService {
         try {
             connect();
 //            registration("log3", "pass3", "user33");
-            changeUserName("user333", "user3");
-
-
+//            changeUserName("user333", "user3");
             System.out.println("connection to data base");
+
+            searchUser("log1","pass1");
+
+
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -76,7 +75,19 @@ public class AuthenticationService {
     public static boolean searchUser(String login, String password){
         try {
             connect();
-            authStatement.executeUpdate("SELECT (login, name) FROM users WHERE");
+            ResultSet resultSet = authStatement.executeQuery("SELECT login, password FROM users WHERE login = '"+ login +"' AND password ='"+password +"'");
+
+            while (resultSet.next()){
+                if (resultSet.getString("login").equals(login) && resultSet.getString("password").equals(password)){
+                    System.out.println("true2");
+                }
+                else {
+                    System.out.println("false");
+                }
+                System.out.println(resultSet.getString("login") + " " + resultSet.getString("password"));
+            }
+
+
         } catch (SQLException | ClassNotFoundException e) {
             e.printStackTrace();
         }
