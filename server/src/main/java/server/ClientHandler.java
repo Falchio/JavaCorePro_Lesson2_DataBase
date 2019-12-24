@@ -102,10 +102,10 @@ public class ClientHandler {
                         }
                     }
                 } catch (RuntimeException e) {  //////////
-                    System.out.println("bue");  //////////
+                    System.out.println("bye");  //////////
                 } catch (SocketTimeoutException e) {  //////////
                     sendMsg("/end");
-                    System.out.println("bue time out");  //////////
+                    System.out.println("bye time out");  //////////
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {

@@ -7,6 +7,8 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="chat (1)" />
+        <module name="server" />
+        <module name="client" />
         <module name="chat (2)" />
       </profile>
     </annotationProcessing>
