@@ -107,6 +107,9 @@ public class ClientHandler {
                                     this.setNick(token[1]);
                                     server.broadcastClientlist();
                                 }
+                                else {
+                                    server.privateMsg( this,  this.getNick()," смена имени не удалась" );
+                                }
 
                             }
 
