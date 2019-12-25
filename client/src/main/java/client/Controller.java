@@ -116,7 +116,7 @@ public class Controller implements Initializable {
                         if (str.equals("/end")) {
                             throw new RuntimeException("отключаемся");
                         }
- ////////////////
+                        ////////////////
                         textArea.appendText(str + "\n");
                     }
 
@@ -143,7 +143,7 @@ public class Controller implements Initializable {
                         }
                     }
                 } catch (RuntimeException e) {  //////////
-                    System.out.println("bue time out");  //////////
+                    System.out.println("bye time out");  //////////
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {
