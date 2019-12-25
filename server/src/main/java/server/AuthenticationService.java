@@ -3,23 +3,27 @@ package server;
 import java.sql.*;
 
 public class AuthenticationService {
-    private static Connection connection;
+    private static Connection connectionToDataBase;
     private static Statement authStatement;
+    private static PreparedStatement preparedStatement;
 
     public static void connect() throws ClassNotFoundException, SQLException {
         Class.forName("org.sqlite.JDBC");
-        connection = DriverManager.getConnection("jdbc:sqlite:main.db");
-        authStatement = connection.createStatement();
+        connectionToDataBase = DriverManager.getConnection("jdbc:sqlite:main.db");
+        authStatement = connectionToDataBase.createStatement();
     }
+
 
     public static void main(String[] args) {
         try {
             connect();
-//            registration("log3", "pass3", "user33");
-//            changeUserName("user333", "user3");
-            System.out.println("connection to data base");
 
-            searchUser("log1","pass1");
+            System.out.println("connection to data base");
+//            registration("log","pass1","use");
+//            authInChat("log1","pass1");
+//            registration(" ", " ", " ");
+//            changeUserName("user32", "user3");
+            getNicknameByLoginAndPassword("log3", "pass3");
 
 
         } catch (ClassNotFoundException e) {
@@ -34,7 +38,7 @@ public class AuthenticationService {
     public static void disconnect() {
         try {
             authStatement.close();
-            connection.close();
+            connectionToDataBase.close();
         } catch (SQLException e) {
             e.printStackTrace();
         }
@@ -42,28 +46,62 @@ public class AuthenticationService {
 
 
 
-    public  String getNicknameByLoginAndPassword(String login, String password) {
-        return null;
-    }
+    public static String getNicknameByLoginAndPassword(String login, String password) {
+        String userName="????";
 
-
-    public static boolean registration(String login, String password, String nickname) {
         try {
             connect();
-            authStatement.executeUpdate("INSERT INTO users (login, password, name) VALUES ('"+login+" ', '" + password +"', '"+ nickname +"')");
+            preparedStatement = connectionToDataBase.prepareStatement("SELECT name FROM users WHERE login = ? AND password =?");
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            userName=resultSet.getString("name");
+            disconnect();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         }
 
-        return true;
+        return userName;
+    }
+
+
+    public static boolean registration(String login, String password, String nickname) {
+        boolean registrationResult = false;
+
+        try {
+            connect();
+            preparedStatement = connectionToDataBase.prepareStatement("INSERT INTO users (login, password, name) VALUES (?,?,?)");
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+            preparedStatement.setString(3, nickname);
+            if (preparedStatement.executeUpdate() != 0) {
+                System.out.println("Rega udalas`");
+                registrationResult = true;
+            }
+            disconnect();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        if (!registrationResult){
+            System.out.println("Rega NE udalas`");
+        }
+
+        return registrationResult;
     }
 
     public static void changeUserName(String oldUserName, String newUserName){
         try {
             connect();
-            authStatement.executeUpdate("UPDATE users SET name ='"+newUserName+"' WHERE name = '"+ oldUserName +"'");
+            preparedStatement = connectionToDataBase.prepareStatement("UPDATE users SET name =? WHERE name = ?");
+            preparedStatement.setString(1, newUserName);
+            preparedStatement.setString(2, oldUserName);
+            preparedStatement.executeUpdate();
+            disconnect();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
         } catch (SQLException e) {
@@ -72,26 +110,28 @@ public class AuthenticationService {
 
     }
 
-    public static boolean searchUser(String login, String password){
+    public static boolean authInChat(String login, String password) {
+
+        boolean authResult = false;
         try {
             connect();
-            ResultSet resultSet = authStatement.executeQuery("SELECT login, password FROM users WHERE login = '"+ login +"' AND password ='"+password +"'");
+            preparedStatement = connectionToDataBase.prepareStatement("SELECT login, password FROM users WHERE login = ? AND password =?");
+            preparedStatement.setString(1, login);
+            preparedStatement.setString(2, password);
+            ResultSet resultSet = preparedStatement.executeQuery();
 
-            while (resultSet.next()){
-                if (resultSet.getString("login").equals(login) && resultSet.getString("password").equals(password)){
-                    System.out.println("true2");
-                }
-                else {
-                    System.out.println("false");
-                }
-                System.out.println(resultSet.getString("login") + " " + resultSet.getString("password"));
-            }
+            if (resultSet.next()) {         // так как значения по полю логина в базе данных может быть только уникальным,
+                    authResult = true;      //то проверка идет исключительно на то нашлась ли строка по условию (в .executeQuery(), что-то есть)
+            }                               // а именно -- WHERE login = ? AND password =? -- если нет, то сочетание логина и пароля указано неверное
+            disconnect();
 
-
-        } catch (SQLException | ClassNotFoundException e) {
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
             e.printStackTrace();
         }
-        return true;
+
+        return authResult;
     }
 
 
