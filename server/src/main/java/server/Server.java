@@ -7,15 +7,15 @@ import java.util.Vector;
 
 public class Server {
     private Vector<ClientHandler> clients;
-    private AuthService authService;
+    private AuthenticationService authService;
 
-    public AuthService getAuthService() {
+    public AuthenticationService getAuthService() {
         return authService;
     }
 
     public Server() {
         clients = new Vector<>();
-        authService = new SimpleAuthService();
+        authService = new AuthenticationService(); // внес изменения
         ServerSocket server = null;
         Socket socket = null;
 

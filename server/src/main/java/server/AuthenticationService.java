@@ -13,27 +13,27 @@ public class AuthenticationService {
         authStatement = connectionToDataBase.createStatement();
     }
 
-
-    public static void main(String[] args) {
-        try {
-            connect();
-
-            System.out.println("connection to data base");
-//            registration("log","pass1","use");
-//            authInChat("log1","pass1");
-//            registration(" ", " ", " ");
-//            changeUserName("user32", "user3");
-            getNicknameByLoginAndPassword("log3", "pass3");
-
-
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }finally {
-            disconnect();
-        }
-    }
+//
+//    public static void main(String[] args) {
+//        try {
+//            connect();
+//
+//            System.out.println("connection to data base");
+////            registration("log","pass1","use");
+////            authInChat("log1","pass1");
+////            registration(" ", " ", " ");
+////            changeUserName("user32", "user3");
+//            getNicknameByLoginAndPassword("log3", "pass3");
+//
+//
+//        } catch (ClassNotFoundException e) {
+//            e.printStackTrace();
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//        }finally {
+//            disconnect();
+//        }
+//    }
 
     public static void disconnect() {
         try {
@@ -77,7 +77,6 @@ public class AuthenticationService {
             preparedStatement.setString(2, password);
             preparedStatement.setString(3, nickname);
             if (preparedStatement.executeUpdate() != 0) {
-                System.out.println("Rega udalas`");
                 registrationResult = true;
             }
             disconnect();
@@ -87,11 +86,7 @@ public class AuthenticationService {
             e.printStackTrace();
         }
 
-        if (!registrationResult){
-            System.out.println("Rega NE udalas`");
-        }
-
-        return registrationResult;
+         return registrationResult;
     }
 
     public static void changeUserName(String oldUserName, String newUserName){
