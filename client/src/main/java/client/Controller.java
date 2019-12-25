@@ -116,7 +116,7 @@ public class Controller implements Initializable {
                         if (str.equals("/end")) {
                             throw new RuntimeException("отключаемся");
                         }
- ////////////////
+                        ////////////////
                         textArea.appendText(str + "\n");
                     }
 

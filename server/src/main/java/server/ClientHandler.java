@@ -22,6 +22,10 @@ public class ClientHandler {
         return nick;
     }
 
+    public void setNick(String nick) {
+        this.nick = nick;
+    }
+
     public ClientHandler(Server server, Socket socket) {
 
         try {
@@ -97,6 +101,14 @@ public class ClientHandler {
                                 server.privateMsg(this, token[1], token[2]);
                             }
 
+                            if (str.startsWith("/setname ")) {
+                                String[] token = str.split(" ", 2);
+                                if (server.getAuthService().changeUserName(this.getNick(), token[1])) {
+                                    this.setNick(token[1]);
+                                    server.broadcastClientlist();
+                                }
+
+                            }
 
 
                         } else {

@@ -13,27 +13,6 @@ public class AuthenticationService {
         authStatement = connectionToDataBase.createStatement();
     }
 
-//
-//    public static void main(String[] args) {
-//        try {
-//            connect();
-//
-//            System.out.println("connection to data base");
-////            registration("log","pass1","use");
-////            authInChat("log1","pass1");
-////            registration(" ", " ", " ");
-////            changeUserName("user32", "user3");
-//            getNicknameByLoginAndPassword("log3", "pass3");
-//
-//
-//        } catch (ClassNotFoundException e) {
-//            e.printStackTrace();
-//        } catch (SQLException e) {
-//            e.printStackTrace();
-//        }finally {
-//            disconnect();
-//        }
-//    }
 
     public static void disconnect() {
         try {
@@ -45,9 +24,8 @@ public class AuthenticationService {
     }
 
 
-
     public static String getNicknameByLoginAndPassword(String login, String password) {
-        String userName=null;
+        String userName = null;
 
         try {
             connect();
@@ -55,7 +33,7 @@ public class AuthenticationService {
             preparedStatement.setString(1, login);
             preparedStatement.setString(2, password);
             ResultSet resultSet = preparedStatement.executeQuery();
-            userName=resultSet.getString("name");
+            userName = resultSet.getString("name");
             disconnect();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -86,16 +64,22 @@ public class AuthenticationService {
             e.printStackTrace();
         }
 
-         return registrationResult;
+        return registrationResult;
     }
 
-    public static void changeUserName(String oldUserName, String newUserName){
+    public static boolean changeUserName(String oldUserName, String newUserName) {
+        boolean changeNameResult = false;
         try {
             connect();
             preparedStatement = connectionToDataBase.prepareStatement("UPDATE users SET name =? WHERE name = ?");
             preparedStatement.setString(1, newUserName);
             preparedStatement.setString(2, oldUserName);
-            preparedStatement.executeUpdate();
+
+            int a = preparedStatement.executeUpdate();
+            if (a != 0) {
+                changeNameResult = true;
+            }
+
             disconnect();
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
@@ -103,8 +87,10 @@ public class AuthenticationService {
             e.printStackTrace();
         }
 
+        return changeNameResult;
     }
 
+    // не пригодился
     public static boolean authInChat(String login, String password) {
 
         boolean authResult = false;
@@ -116,7 +102,7 @@ public class AuthenticationService {
             ResultSet resultSet = preparedStatement.executeQuery();
 
             if (resultSet.next()) {         // так как значения по полю логина в базе данных может быть только уникальным,
-                    authResult = true;      //то проверка идет исключительно на то нашлась ли строка по условию (в .executeQuery(), что-то есть)
+                authResult = true;      //то проверка идет исключительно на то нашлась ли строка по условию (в .executeQuery(), что-то есть)
             }                               // а именно -- WHERE login = ? AND password =? -- если нет, то сочетание логина и пароля указано неверное
             disconnect();
 
