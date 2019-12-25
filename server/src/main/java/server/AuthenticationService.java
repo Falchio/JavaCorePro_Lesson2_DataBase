@@ -47,7 +47,7 @@ public class AuthenticationService {
 
 
     public static String getNicknameByLoginAndPassword(String login, String password) {
-        String userName="????";
+        String userName=null;
 
         try {
             connect();
